@@ -42,6 +42,7 @@ IF SET_ACTIVE_ROLE IS "DESIGNER":
 ## STRICT UI COMPONENT RULES (FOR ALL ROLES & AI)
 1. NEVER use direct Tailwind color classes (e.g., `text-blue-500`). You MUST use the CSS variables mapped in `theme.ts` (e.g., `text-primary`).
 2. NEVER hardcode text strings in React components. Every UI string and WhatsApp bot message MUST be mapped from `copy.json`. This allows the PM to edit freely without touching code.
+3. CONTEXT OPTIMIZATION: Keep all UI code inline within the main page file. Do NOT extract micro-components into separate files unless they strictly require a `'use client'` boundary for interactivity, or if they are major, globally reused elements (like a Navbar). Prioritize single-file monolithic structures to conserve AI context tokens.
 
 ---
 ## PROJECT CONTEXT
