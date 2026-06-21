@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fafafa;
+  --foreground: #09090b;
+
+  --canvas: #fafafa;
+  --surface: #ffffff;
+  --surface-raised: #f4f4f5;
+  --border: #e4e4e7;
+  --ink: #09090b;
+  --ink-muted: #71717a;
+  --ink-faint: #a1a1aa;
+
+  /* Trust/Brand Colors (Jade/Emerald Green for Secure Escrow Feel) */
+  --trust: #059669;
+  --trust-mid: #047857;
+  --trust-light: #ecfdf5;
+
+  /* Error/Validation Colors */
+  --error: #dc2626;
+  --error-mid: #b91c1c;
+  --error-light: #fef2f2;
+
+  --shadow-card-val: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03), 0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #09090b;
+    --foreground: #fafafa;
+
+    --canvas: #09090b;
+    --surface: #121214;
+    --surface-raised: #1e1e21;
+    --border: #27272a;
+    --ink: #fafafa;
+    --ink-muted: #a1a1aa;
+    --ink-faint: #52525b;
+
+    --trust: #10b981;
+    --trust-mid: #34d399;
+    --trust-light: #064e3b;
+
+    --error: #f87171;
+    --error-mid: #fca5a5;
+    --error-light: #7f1d1d;
+
+    --shadow-card-val: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* Semantic mappings */
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-border: var(--border);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+
+  --color-trust: var(--trust);
+  --color-trust-mid: var(--trust-mid);
+  --color-trust-light: var(--trust-light);
+
+  --color-error: var(--error);
+  --color-error-mid: var(--error-mid);
+  --color-error-light: var(--error-light);
+
+  --shadow-card: var(--shadow-card-val);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
