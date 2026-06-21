@@ -1,0 +1,69 @@
+# .antigravityignore
+
+# ── Dependencies ────────────────────────────────
+
+node_modules/
+.pnpm-store/
+
+# ── Build outputs ────────────────────────────────
+
+.next/
+dist/
+build/
+out/
+.vercel/
+
+# ── Lock files (huge, AI never needs these) ──────
+
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ── Logs & cache ─────────────────────────────────
+
+\*.log
+.cache/
+.turbo/
+
+# ── Test artifacts ───────────────────────────────
+
+coverage/
+**/**snapshots**/
+**/\*.snap
+
+# ── Compiled/minified assets ─────────────────────
+
+_.min.js
+_.min.css
+\*.map
+
+# ── Database & Generated files ───────────────────
+
+\*.generated.ts
+.supabase/ # Ignore local Supabase CLI internal state/containers
+
+# Note: We keep supabase/migrations/ VISIBLE so agents know your DB schema!
+
+# ── Secrets (critical for Supabase/env configs) ───
+
+.env
+.env._
+!.env.example # ← keep the example visible to the agent
+_.pem
+\*.key
+
+# ── Docker/infra noise ────────────────────────────
+
+.docker/
+docker-compose.override.yml
+
+# ── Media & public assets ─────────────────────────
+
+public/images/
+public/videos/
+**/\*.png
+**/_.jpg
+\*\*/_.jpeg
+**/\*.svg
+**/_.mp4
+\*\*/_.pdf
