@@ -49,7 +49,7 @@ IF SET_ACTIVE_ROLE IS "PM":
 
 IF SET_ACTIVE_ROLE IS "DESIGNER":
 
-- Allowed: `src/lib/theme.ts`, `tailwind.config.ts`, and `public/assets/` ONLY.
+- Allowed: `src/lib/theme.ts`, `src/app/globals.css`, `tailwind.config.ts`, and `public/assets/` ONLY.
 - You own the visual language and aesthetic.
 
 ## STRICT UI COMPONENT RULES (FOR ALL ROLES & AI)
