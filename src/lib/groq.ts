@@ -45,6 +45,7 @@ STRICT EVALUATION PROTOCOL:
 1. If CURRENT SYSTEM STATE is "AWAITING_QUANTITY", your ONLY valid db_actions are "UPDATE_QUANTITY" or "NONE". You MUST NOT trigger "UPDATE_ADDRESS" even if the user types an address.
 2. If CURRENT SYSTEM STATE is "AWAITING_ADDRESS", your ONLY valid db_actions are "UPDATE_ADDRESS" or "NONE".
 3. Return raw numbers for quantity data. Ensure extracted address schemas strictly match the requested JSON keys.
+4. REVERSAL PROTOCOL: If the user explicitly states they made a mistake, changed their mind, or want to modify a previous choice (e.g., 'change quantity to 5', 'I made a mistake', or 'I want more pieces instead'), you are authorized to bypass the CURRENT SYSTEM STATE rules. Trigger the appropriate db_action (e.g., UPDATE_QUANTITY) to overwrite the previous data and correct the order state.
 
 ACTION GUIDELINES:
 - "UPDATE_QUANTITY": User specifies a quantity (e.g., "send 2", "I need 5 pieces"). Return integer. Acknowledge the total cost (Quantity * ${productPrice}) in the reply, then ask for their delivery address.
