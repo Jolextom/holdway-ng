@@ -16,7 +16,8 @@ export async function parseIntent(
   chatHistory: ChatMessage[],
   productName: string,
   productPrice: number,
-  currentStatus: string // Crucial: The current state of the order from Supabase
+  currentStatus: string, // Crucial: The current state of the order from Supabase
+  savedAddress: string | null // Crucial: The buyer's existing shipping details if present
 ): Promise<IntentResponse> {
   if (!apiKey) {
     console.warn('GROQ_API_KEY is not defined. Returning fallback.');
@@ -27,10 +28,18 @@ export async function parseIntent(
     };
   }
 
+  const savedAddressContext = savedAddress
+    ? `The buyer has a saved address on file: "${savedAddress}".
+       If the conversation is in the "AWAITING_ADDRESS" state, and they have not confirmed their address yet, your whatsapp_reply should explicitly offer this option: "Would you like us to deliver to your saved address: ${savedAddress}? Reply YES to confirm, or type a new delivery address."`
+    : `The buyer has no saved address. Ask them to provide their delivery address formatted as: Street Address, LGA, State.`;
+
   const systemPrompt = `You are the core routing engine for Holdway NG, an automated WhatsApp conversational commerce platform.
 Your objective is to progress the checkout flow for the product: "${productName}" priced at NGN ${productPrice}.
 
 CURRENT SYSTEM STATE: The database order status for this user is currently: "${currentStatus}"
+
+SAVED ADDRESS CONTEXT:
+${savedAddressContext}
 
 STRICT EVALUATION PROTOCOL:
 1. If CURRENT SYSTEM STATE is "AWAITING_QUANTITY", your ONLY valid db_actions are "UPDATE_QUANTITY" or "NONE". You MUST NOT trigger "UPDATE_ADDRESS" even if the user types an address.
@@ -38,7 +47,7 @@ STRICT EVALUATION PROTOCOL:
 3. Return raw numbers for quantity data. Ensure extracted address schemas strictly match the requested JSON keys.
 
 ACTION GUIDELINES:
-- "UPDATE_QUANTITY": User specifies a quantity (e.g., "send 2", "I need 5 pieces"). Return integer. Acknowledge the total cost (Quantity * ${productPrice}) in the reply, then ask for their delivery address formatted as: Street, LGA, State.
+- "UPDATE_QUANTITY": User specifies a quantity (e.g., "send 2", "I need 5 pieces"). Return integer. Acknowledge the total cost (Quantity * ${productPrice}) in the reply, then ask for their delivery address.
 - "UPDATE_ADDRESS": User provides shipping info. Extract address_line_1, lga, and state. In the reply, politely confirm the details and inform them you are spinning up their secure payment confirmation.
 - "NONE": General greetings, clarifying questions, or ambiguous statements. Guide them back to fulfilling the current missing state requirement.
 
@@ -57,7 +66,7 @@ Example 2:
 Current State: AWAITING_QUANTITY
 User Message: "Please send 3 of them to my office"
 Output: {
-  "whatsapp_reply": "Perfect, that's 3 units of ${productName}. Your subtotal comes to NGN ${productPrice * 3}. Could you please provide your full delivery address (Street, LGA, and State) so we can calculate shipping?",
+  "whatsapp_reply": "Perfect, that's 3 units of ${productName}. Your subtotal comes to NGN ${productPrice * 3}. ${savedAddress ? `Would you like us to deliver to your saved address: ${savedAddress}? Reply YES to confirm, or type a new delivery address.` : 'Could you please provide your full delivery address (Street, LGA, and State) so we can calculate shipping?'} ",
   "db_action": "UPDATE_QUANTITY",
   "extracted_data": 3
 }
@@ -81,7 +90,7 @@ Respond ONLY with a valid JSON object matching this schema structure:
   try {
     const formattedMessages = [
       { role: 'system', content: systemPrompt },
-      ...chatHistory.slice(-4).map((msg) => ({ // sliding window of last 4 messages keeps context lean and fast
+      ...chatHistory.slice(-4).map((msg) => ({
         role: msg.role === 'assistant' ? ('assistant' as const) : ('user' as const),
         content: msg.content,
       })),
@@ -91,7 +100,7 @@ Respond ONLY with a valid JSON object matching this schema structure:
       model: 'llama-3.3-70b-versatile',
       messages: formattedMessages as any,
       response_format: { type: 'json_object' },
-      temperature: 0.1, // Near-zero temperature minimizes variance or creative failure
+      temperature: 0.1,
     });
 
     const content = response.choices[0]?.message?.content;

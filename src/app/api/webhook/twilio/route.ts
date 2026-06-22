@@ -97,8 +97,48 @@ export async function POST(req: NextRequest) {
     };
     const updatedChatHistory = [...(order.chat_history || []), userMsg];
 
+    // Fetch the buyer's profile to see if they have a saved address
+    const { data: profile } = await db
+      .from('profiles')
+      .select('address_line_1, state, lga')
+      .eq('phone_number', buyerPhone)
+      .maybeSingle();
+
+    // Check if we can reuse the saved address
+    if (order.status === 'AWAITING_ADDRESS' && profile?.address_line_1 && profile?.state && profile?.lga) {
+      if (/^(yes|use old|use saved|correct|same|forward|confirm|use saved address)$/i.test(messageBody.trim())) {
+        const confirmationReply = `Awesome! We'll deliver to your saved address: ${profile.address_line_1}, ${profile.lga}, ${profile.state}. Generating your payment instructions now...`;
+        const confirmAssistantMsg: ChatMessage = {
+          role: 'assistant',
+          content: confirmationReply,
+          timestamp: new Date().toISOString(),
+        };
+        const finalHistory = [...updatedChatHistory, confirmAssistantMsg];
+
+        await db
+          .from('orders')
+          .update({
+            status: 'AWAITING_PAYMENT',
+            payment_ref: `mock_ref_${Math.random().toString(36).substring(2, 11).toUpperCase()}`,
+            auto_release_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+            chat_history: finalHistory,
+          })
+          .eq('id', order.id);
+
+        const twiml = `<?xml version="1.0" encoding="UTF-8"?>
+        <Response>
+          <Message>${confirmationReply}</Message>
+        </Response>`;
+        return new Response(twiml, { headers: { 'Content-Type': 'application/xml' } });
+      }
+    }
+
+    const savedAddressStr = profile?.address_line_1
+      ? `${profile.address_line_1}, ${profile.lga}, ${profile.state}`
+      : null;
+
     // 3. Call the Groq AI parser utility
-    const intent = await parseIntent(updatedChatHistory, product.name, product.price, order.status);
+    const intent = await parseIntent(updatedChatHistory, product.name, product.price, order.status, savedAddressStr);
 
     let nextStatus = order.status;
     let nextQuantity = order.quantity;
