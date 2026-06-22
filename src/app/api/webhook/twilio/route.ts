@@ -22,20 +22,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Cast supabaseAdmin to any to avoid generic SDK typing mismatches
     const db = supabaseAdmin as any;
 
     // 1. Resolve the active order
     let order: (Order & { products: Product | null }) | null = null;
 
-    // Check if the message contains an Order ID (UUID format) for handoff mapping
-    const uuidRegex =
-      /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
+    const uuidRegex = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
     const match = messageBody.match(uuidRegex);
     const orderIdInMessage = match ? match[0] : null;
 
     if (orderIdInMessage) {
-      // Find the specific order mentioned in the message
       const { data: orderById } = await db
         .from("orders")
         .select("*, products:product_id(*)")
@@ -44,7 +40,6 @@ export async function POST(req: NextRequest) {
 
       if (orderById) {
         const o = orderById as any;
-        // Associate the phone number with this order if not already set
         if (!o.buyer_phone) {
           await db
             .from("orders")
@@ -56,7 +51,6 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // If no order ID was in the message, search for the most recent active order by phone number
     if (!order) {
       const { data: activeOrder } = await db
         .from("orders")
@@ -78,17 +72,13 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // If no active order exists, respond politely
     if (!order || !order.products) {
       const fallbackReply =
         "Welcome to Holdway! It looks like you don't have an active order right now. Please visit one of our storefront single links to choose a product and start checkout.";
-      const twiml = `<?xml version="1.0" encoding="UTF-8"?>
-      <Response>
-        <Message>${fallbackReply}</Message>
-      </Response>`;
-      return new Response(twiml, {
-        headers: { "Content-Type": "application/xml" },
-      });
+      return new Response(
+        `<?xml version="1.0" encoding="UTF-8"?><Response><Message>${fallbackReply}</Message></Response>`,
+        { headers: { "Content-Type": "application/xml" } },
+      );
     }
 
     const product = order.products;
@@ -108,19 +98,21 @@ export async function POST(req: NextRequest) {
       .eq("phone_number", buyerPhone)
       .maybeSingle();
 
-    // Check if we can reuse the saved address
+    // --- INTERCEPT POINT A: FAST-PASS LANE (RETURNING USERS) ---
     if (
       order.status === "AWAITING_ADDRESS" &&
       profile?.address_line_1 &&
       profile?.state &&
       profile?.lga
     ) {
-      if (
-        /^(yes|use old|use saved|correct|same|forward|confirm|use saved address)$/i.test(
-          messageBody.trim(),
-        )
-      ) {
-        const confirmationReply = `Awesome! We'll deliver to your saved address: ${profile.address_line_1}, ${profile.lga}, ${profile.state}. Generating your payment instructions now...`;
+      if (/^(yes|use old|use saved|correct|same|forward|confirm|use saved address)$/i.test(messageBody.trim())) {
+        const deliveryState = profile.state.toLowerCase().trim();
+        const shippingFee = deliveryState.includes("lagos") ? 1500 : 3500;
+        const subtotal = order.quantity * product.price;
+        const finalTotal = subtotal + shippingFee;
+
+        const confirmationReply = `Awesome! We'll deliver to your saved address: ${profile.address_line_1}, ${profile.lga}, ${profile.state}.\n\n*Order Summary:*\n* ${order.quantity} × ${product.name}: ₦${subtotal.toLocaleString()}\n* Shipping (${deliveryState.includes("lagos") ? "Lagos" : "Nationwide"}): ₦${shippingFee.toLocaleString()}\n* *Total: ₦${finalTotal.toLocaleString()}*\n\n🏦 *Escrow Payment Account:*\n* Bank: Holdway Sandbox Bank\n* Account Number: 9920183741\n* Account Name: Holdway Escrow / Merchant\n\nPlease complete the transfer within 24 hours to secure your order.`;
+
         const confirmAssistantMsg: ChatMessage = {
           role: "assistant",
           content: confirmationReply,
@@ -132,21 +124,17 @@ export async function POST(req: NextRequest) {
           .from("orders")
           .update({
             status: "AWAITING_PAYMENT",
+            total_amount: finalTotal,
             payment_ref: `mock_ref_${Math.random().toString(36).substring(2, 11).toUpperCase()}`,
-            auto_release_at: new Date(
-              Date.now() + 24 * 60 * 60 * 1000,
-            ).toISOString(),
+            auto_release_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
             chat_history: finalHistory,
           })
           .eq("id", order.id);
 
-        const twiml = `<?xml version="1.0" encoding="UTF-8"?>
-        <Response>
-          <Message>${confirmationReply}</Message>
-        </Response>`;
-        return new Response(twiml, {
-          headers: { "Content-Type": "application/xml" },
-        });
+        return new Response(
+          `<?xml version="1.0" encoding="UTF-8"?><Response><Message>${confirmationReply}</Message></Response>`,
+          { headers: { "Content-Type": "application/xml" } },
+        );
       }
     }
 
@@ -196,18 +184,23 @@ export async function POST(req: NextRequest) {
             updated_at: new Date().toISOString(),
           });
 
-          // Mock payment virtual account generation (strictly bypass real/sandbox payment rails)
+          // --- INTERCEPT POINT B: DYNAMIC SHIPPING CALCULATION ---
+          const deliveryState = addr.state.toLowerCase().trim();
+          const shippingFee = deliveryState.includes("lagos") ? 1500 : 3500;
+          const subtotal = nextQuantity * product.price;
+          
+          nextTotalAmount = subtotal + shippingFee;
           nextPaymentRef = `mock_ref_${Math.random().toString(36).substring(2, 11).toUpperCase()}`;
           nextStatus = "AWAITING_PAYMENT";
-          nextAutoReleaseAt = new Date(
-            Date.now() + 24 * 60 * 60 * 1000,
-          ).toISOString(); // 24 hours auto-release
+          nextAutoReleaseAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+
+          // Programmatically override AI text response to insert clean system invoice layout
+          intent.whatsapp_reply = `Got it! Delivery address confirmed.\n\n*Order Summary:*\n* ${nextQuantity} × ${product.name}: ₦${subtotal.toLocaleString()}\n* Shipping (${deliveryState.includes("lagos") ? "Lagos" : "Nationwide"}): ₦${shippingFee.toLocaleString()}\n* *Total: ₦${nextTotalAmount.toLocaleString()}*\n\n🏦 *Escrow Payment Account:*\n* Bank: Holdway Sandbox Bank\n* Account Number: 9920183741\n* Account Name: Holdway Escrow / Merchant\n\nPlease complete the transfer within 24 hours to secure your order.`;
         }
         break;
       }
       case "NONE":
       default:
-        // No DB state action needed, just chat updates
         break;
     }
 
@@ -219,7 +212,6 @@ export async function POST(req: NextRequest) {
     };
     const finalChatHistory = [...updatedChatHistory, assistantMsg];
 
-    // Save final status and fields in one atomic update
     await db
       .from("orders")
       .update({
@@ -233,28 +225,16 @@ export async function POST(req: NextRequest) {
       .eq("id", order.id);
 
     // 6. Return TwiML XML
-    const twiml = `<?xml version="1.0" encoding="UTF-8"?>
-    <Response>
-      <Message>${intent.whatsapp_reply}</Message>
-    </Response>`;
-
-    return new Response(twiml, {
-      headers: {
-        "Content-Type": "application/xml",
-      },
-    });
+    return new Response(
+      `<?xml version="1.0" encoding="UTF-8"?><Response><Message>${intent.whatsapp_reply}</Message></Response>`,
+      { headers: { "Content-Type": "application/xml" } },
+    );
   } catch (error) {
     console.error("Error handling Twilio webhook:", error);
-    const errorReply =
-      "We encountered a temporary system issue. Please send your message again in a moment.";
-    const errorTwiml = `<?xml version="1.0" encoding="UTF-8"?>
-    <Response>
-      <Message>${errorReply}</Message>
-    </Response>`;
-    return new Response(errorTwiml, {
-      headers: {
-        "Content-Type": "application/xml",
-      },
-    });
+    const errorReply = "We encountered a temporary system issue. Please send your message again in a moment.";
+    return new Response(
+      `<?xml version="1.0" encoding="UTF-8"?><Response><Message>${errorReply}</Message></Response>`,
+      { headers: { "Content-Type": "application/xml" } },
+    );
   }
 }

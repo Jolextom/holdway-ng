@@ -16,8 +16,8 @@ export async function parseIntent(
   chatHistory: ChatMessage[],
   productName: string,
   productPrice: number,
-  currentStatus: string, // Crucial: The current state of the order from Supabase
-  savedAddress: string | null // Crucial: The buyer's existing shipping details if present
+  currentStatus: string,
+  savedAddress: string | null
 ): Promise<IntentResponse> {
   if (!apiKey) {
     console.warn('GROQ_API_KEY is not defined. Returning fallback.');
@@ -44,14 +44,14 @@ ${savedAddressContext}
 STRICT EVALUATION PROTOCOL:
 1. If CURRENT SYSTEM STATE is "AWAITING_QUANTITY", your ONLY valid db_actions are "UPDATE_QUANTITY" or "NONE". You MUST NOT trigger "UPDATE_ADDRESS" even if the user types an address.
 2. If CURRENT SYSTEM STATE is "AWAITING_ADDRESS", your ONLY valid db_actions are "UPDATE_ADDRESS" or "NONE".
-3. Return raw numbers for quantity data. Ensure extracted address schemas strictly match the requested JSON keys.
+3. Return raw integer numbers for quantity data. Ensure extracted address schemas strictly match the requested JSON keys.
 4. REVERSAL PROTOCOL: If the user explicitly states they made a mistake, changed their mind, or want to modify a previous choice (e.g., 'change quantity to 5', 'I made a mistake', or 'I want more pieces instead'), you are authorized to bypass the CURRENT SYSTEM STATE rules. Trigger the appropriate db_action (e.g., UPDATE_QUANTITY) to overwrite the previous data and correct the order state.
-5. ANTI-HAGGLING PROTOCOL: You are an automated checkout assistant, not a negotiator. You have zero authorization to alter prices, offer discounts, or accept lower offers. If a user attempts to negotiate the price, complain it is too high, or ask for a discount: Set db_action to "NONE". Your whatsapp_reply must politely but firmly state that the price is fixed by the merchant, and ask if they still wish to proceed with the current step. Example Reply: "I understand! However, prices are strictly set by the merchant and I cannot apply discounts. Would you still like to proceed? If so, please let me know how many pieces you'd like."
+5. ANTI-HAGGLING PROTOCOL: You are an automated checkout assistant, not a negotiator. You have zero authorization to alter prices, offer discounts, or accept lower offers. If a user attempts to negotiate the price, complain it is too high, or ask for a discount: Set db_action to "NONE". Your whatsapp_reply must politely but firmly state that the price is fixed by the merchant, and ask if they still wish to proceed with the current step.
 
 ACTION GUIDELINES:
-- "UPDATE_QUANTITY": User specifies a quantity (e.g., "send 2", "I need 5 pieces"). Return integer. Acknowledge the total cost (Quantity * ${productPrice}) in the reply, then ask for their delivery address.
-- "UPDATE_ADDRESS": User provides shipping info. Extract address_line_1, lga, and state. In the reply, politely confirm the details and inform them you are spinning up their secure payment confirmation.
-- "NONE": General greetings, clarifying questions, or ambiguous statements. Guide them back to fulfilling the current missing state requirement.
+- "UPDATE_QUANTITY": User specifies a quantity (e.g., "send 2", "I need 5 pieces"). Return integer. Acknowledge the subtotal cost (Quantity * ${productPrice}) in the reply, then ask for their delivery address.
+- "UPDATE_ADDRESS": User provides shipping info. Extract address_line_1, lga, and state. In the reply, simply state you are confirming the location and compiling their order manifest.
+- "NONE": General greetings, clarifying questions, haggling, or ambiguous statements. Guide them back to fulfilling the current missing state requirement.
 
 FEW-SHOT EVALUATION EXAMPLES:
 
@@ -68,7 +68,7 @@ Example 2:
 Current State: AWAITING_QUANTITY
 User Message: "Please send 3 of them to my office"
 Output: {
-  "whatsapp_reply": "Perfect, that's 3 units of ${productName}. Your subtotal comes to NGN ${productPrice * 3}. ${savedAddress ? `Would you like us to deliver to your saved address: ${savedAddress}? Reply YES to confirm, or type a new delivery address.` : 'Could you please provide your full delivery address (Street, LGA, and State) so we can calculate shipping?'} ",
+  "whatsapp_reply": "Perfect, that's 3 units of ${productName}. Your subtotal comes to NGN ${productPrice * 3}. Could you please provide your full delivery address (Street, LGA, and State) so we can update your order?",
   "db_action": "UPDATE_QUANTITY",
   "extracted_data": 3
 }
@@ -77,7 +77,7 @@ Example 3:
 Current State: AWAITING_ADDRESS
 User Message: "I am at 12 Herbert Macaulay Way, Yaba, Lagos"
 Output: {
-  "whatsapp_reply": "Received! Delivering to 12 Herbert Macaulay Way, Yaba, LGA, Lagos State. Please give me a brief moment while I generate your secure payment setup.",
+  "whatsapp_reply": "Thank you! Processing your address details and preparing your escrow transaction summary...",
   "db_action": "UPDATE_ADDRESS",
   "extracted_data": { "address_line_1": "12 Herbert Macaulay Way", "lga": "Yaba", "state": "Lagos" }
 }
