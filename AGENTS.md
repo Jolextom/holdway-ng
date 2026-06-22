@@ -63,4 +63,4 @@ IF SET_ACTIVE_ROLE IS "DESIGNER":
 ## PROJECT CONTEXT
 
 Next.js App Router + TypeScript + Tailwind + Supabase + Groq AI + Twilio.
-Core flow: Web checkout / Single Link → WhatsApp `wa.me` handoff → Groq AI parses intent (Quantity, Address) via JSON mode → Payment Sandbox Virtual Account checked out from pool → Webhook confirms payment to Platform Wallet → UI updates → Escrow released via Transfer API.
+Core flow: Web checkout / Single Link → WhatsApp `wa.me` handoff → Groq AI parses intent (Quantity, Address) via JSON mode → Sandbox Virtual Account checked out from pool → Webhook confirms payment to Platform Wallet → UI updates → Escrow released via Transfer API.

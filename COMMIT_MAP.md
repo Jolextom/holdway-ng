@@ -1,7 +1,5 @@
 # COMMIT MAP & EXECUTION SEQUENCE
 
-# DevCareer Hackathon
-
 #
 
 # INSTRUCTION FOR AI AGENTS:
@@ -32,7 +30,7 @@
 ### Step 4: The Escrow Engine
 
 **Commit:** `feat(payments): implement payment virtual account pooling and webhook ledger`
-**Scope:** Payment API authentication, virtual account checkout logic, and incoming payment webhook verification.
+**Scope:**payment API authentication, virtual account checkout logic, and incoming payment webhook verification.
 
 ### Step 5: Web Handoff
 

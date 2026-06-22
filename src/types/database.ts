@@ -1,14 +1,14 @@
 export type OrderStatus =
-  | 'AWAITING_QUANTITY'
-  | 'AWAITING_ADDRESS'
-  | 'AWAITING_PAYMENT'
-  | 'PAID_IN_ESCROW'
-  | 'AWAITING_CONFIRMATION'
-  | 'COMPLETED'
-  | 'CANCELLED';
+  | "AWAITING_QUANTITY"
+  | "AWAITING_ADDRESS"
+  | "AWAITING_PAYMENT"
+  | "PAID_IN_ESCROW"
+  | "AWAITING_CONFIRMATION"
+  | "COMPLETED"
+  | "CANCELLED";
 
 export interface ChatMessage {
-  role: 'user' | 'assistant' | 'system';
+  role: "user" | "assistant" | "system";
   content: string;
   timestamp: string;
 }
@@ -63,28 +63,30 @@ export interface Database {
     Tables: {
       merchants: {
         Row: Merchant;
-        Insert: Omit<Merchant, 'created_at' | 'updated_at'>;
-        Update: Partial<Omit<Merchant, 'id'>>;
+        Insert: Omit<Merchant, "created_at" | "updated_at">;
+        Update: Partial<Omit<Merchant, "id">>;
       };
       products: {
         Row: Product;
-        Insert: Omit<Product, 'id' | 'created_at' | 'updated_at'> & { id?: string };
-        Update: Partial<Omit<Product, 'id' | 'merchant_id'>>;
+        Insert: Omit<Product, "id" | "created_at" | "updated_at"> & {
+          id?: string;
+        };
+        Update: Partial<Omit<Product, "id" | "merchant_id">>;
       };
       profiles: {
         Row: Profile;
-        Insert: Omit<Profile, 'created_at' | 'updated_at'>;
+        Insert: Omit<Profile, "created_at" | "updated_at">;
         Update: Partial<Profile>;
       };
       orders: {
         Row: Order;
-        Insert: Omit<Order, 'id' | 'created_at' | 'updated_at'> & {
+        Insert: Omit<Order, "id" | "created_at" | "updated_at"> & {
           id?: string;
           chat_history?: ChatMessage[];
           payment_ref?: string | null;
           auto_release_at?: string | null;
         };
-        Update: Partial<Omit<Order, 'id'>>;
+        Update: Partial<Omit<Order, "id">>;
       };
     };
   };

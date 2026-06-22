@@ -1,6 +1,6 @@
 # holdway ng
 
-A high-performance, minimalist conversational escrow checkout pipeline designed to bridge the gap between social media storefronts (Instagram/X) and WhatsApp commerce for Nigerian merchants. Built for the DevCareer Hackathon.
+A high-performance, minimalist conversational escrow checkout pipeline designed to bridge the gap between social media storefronts (Instagram/X) and WhatsApp commerce for Nigerian merchants.
 
 ## 🛠️ Tech Stack
 
@@ -8,7 +8,7 @@ A high-performance, minimalist conversational escrow checkout pipeline designed 
 - **Styling:** Tailwind CSS + Framer Motion
 - **Database & Ledger:** Supabase (PostgreSQL)
 - **AI Core:** Groq Cloud SDK (Llama-3 JSON Intent Parser)
-- **Payment Infrastructure:** Sandbox API (Virtual Account Pooling & Payout Transfers)
+- **Payment Infrastructure:** Payment Sandbox API (Virtual Account Pooling & Payout Transfers)
 - **Communication Rails:** Twilio API for WhatsApp
 
 ## 🚦 Getting Started
