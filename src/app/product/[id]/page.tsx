@@ -126,6 +126,11 @@ export default async function ProductPage({ params }: PageProps) {
             <h1 className="text-2xl font-bold tracking-tight text-ink">
               {product.name}
             </h1>
+            {product.description && (
+              <p className="text-sm text-ink-muted leading-relaxed mt-0.5 animate-fadeIn">
+                {product.description}
+              </p>
+            )}
             <div className="text-3xl font-extrabold text-trust mt-1">
               {formattedPrice}
             </div>

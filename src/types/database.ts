@@ -27,8 +27,10 @@ export interface Product {
   id: string;
   merchant_id: string;
   name: string;
+  description: string | null;
   price: number;
   image_url: string | null;
+  stock: number;
   is_active: boolean;
   created_at: string;
   updated_at: string;
