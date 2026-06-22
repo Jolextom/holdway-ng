@@ -68,5 +68,17 @@
       "goToInventory": "Go to my inventory →",
       "updateLater": "You can always add or update your payout details later from Settings."
     }
+  },
+  "storefront": {
+    "whatsappBotNumber": "+14155238886",
+    "whatsappManifest": "Hello Holdway, I want to checkout order ID: {order_id}",
+    "buyButton": "Buy via WhatsApp →",
+    "buyButtonLoading": "Setting up order...",
+    "priceLabel": "Price",
+    "shippingInfo": "📦 Flat-rate shipping: ₦1,500 Lagos / ₦3,500 Nationwide",
+    "escrowBadge": "🔒 Escrow Secured",
+    "escrowBody": "Your payment is held safely in escrow and only released to the merchant after you confirm delivery.",
+    "errorProductNotFound": "Product not found",
+    "errorGeneric": "Something went wrong. Please try again."
   }
 }

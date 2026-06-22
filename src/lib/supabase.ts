@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Database } from '@/types/database';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -13,11 +13,12 @@ if (!supabaseUrl || !supabaseAnonKey) {
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
 
 // Admin client for server-side/webhooks (bypasses RLS policies)
-export const supabaseAdmin = typeof window === 'undefined' && supabaseServiceKey
-  ? createClient<Database>(supabaseUrl, supabaseServiceKey, {
-      auth: {
-        persistSession: false,
-        autoRefreshToken: false,
-      },
-    })
-  : supabase;
+export const supabaseAdmin: SupabaseClient<Database> =
+  typeof window === 'undefined' && supabaseServiceKey
+    ? createClient<Database>(supabaseUrl, supabaseServiceKey, {
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false,
+        },
+      })
+    : supabase;
