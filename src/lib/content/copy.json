@@ -1,0 +1,72 @@
+{
+  "brand": {
+    "name": "HOLDWAY"
+  },
+  "onboarding": {
+    "steps": ["Business", "Verify", "Payout"],
+    "headings": {
+      "business": "Set up your storefront",
+      "otp": "Check your WhatsApp",
+      "payout": "Payout details (optional)",
+      "complete": "🎉 Welcome!"
+    },
+    "descriptions": {
+      "business": "Takes 2 minutes. We’ll verify your WhatsApp number first.",
+      "otp": "Enter the code we sent to your WhatsApp.",
+      "payout": "Add your bank account to receive payouts. You can skip this for now.",
+      "complete": "Your account is ready. Start adding products to sell.",
+      "trustNote": "Your information is stored securely and used only for account setup and order payouts."
+    },
+    "form": {
+      "businessName": {
+        "label": "Business name",
+        "placeholder": "e.g. Zara's Ankara Fabrics",
+        "errorRequired": "Business name is required."
+      },
+      "whatsapp": {
+        "label": "WhatsApp phone number",
+        "helper": "This is where we'll send your verification code.",
+        "placeholder": "+234 801 234 5678",
+        "errorRequired": "WhatsApp number is required.",
+        "errorInvalid": "Enter a valid Nigerian number, e.g. +2348012345678."
+      },
+      "otp": {
+        "label": "Verification code",
+        "sentMessage": "We sent a 6‑digit code to ",
+        "instruction": ". Enter it below to verify your number.",
+        "placeholder": "123456",
+        "errorLength": "Enter the 6‑digit code.",
+        "errorInvalid": "Incorrect code. Try again."
+      },
+      "payout": {
+        "whyNeedThisTitle": "Why we need this",
+        "whyNeedThisBody1": "Your bank details are used to settle payouts from completed orders. You can skip this now, but we ",
+        "whyNeedThisBold": "won’t be able to release funds",
+        "whyNeedThisBody2": " until you add them.",
+        "bankLabel": "Bank name",
+        "bankPlaceholder": "Select your bank",
+        "bankError": "Select your bank.",
+        "accountLabel": "Account number",
+        "accountPlaceholder": "2081234567",
+        "accountErrorRequired": "Enter your 10‑digit account number.",
+        "accountErrorVerify": "Wait for account verification to complete.",
+        "accountNameLabel": "Account name",
+        "verifying": "Verifying…",
+        "verified": "Account verified"
+      }
+    },
+    "actions": {
+      "sendOtp": "Send OTP →",
+      "sending": "Sending code…",
+      "resending": "Resending…",
+      "resend": "Resend code",
+      "resendIn": "Resend in ",
+      "verify": "Verify →",
+      "goBack": "← Wrong number? Go back",
+      "continue": "Continue →",
+      "skip": "Skip for now (add later)",
+      "goToInventory": "Go to my inventory →",
+      "updateLater": "You can always add or update your payout details later from Settings."
+    }
+  }
+}
