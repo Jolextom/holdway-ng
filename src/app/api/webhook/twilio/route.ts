@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
     const updatedChatHistory = [...(order.chat_history || []), userMsg];
 
     // 3. Call the Groq AI parser utility
-    const intent = await parseIntent(updatedChatHistory, product.name, product.price);
+    const intent = await parseIntent(updatedChatHistory, product.name, product.price, order.status);
 
     let nextStatus = order.status;
     let nextQuantity = order.quantity;
