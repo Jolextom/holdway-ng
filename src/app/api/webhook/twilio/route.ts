@@ -27,7 +27,8 @@ export async function POST(req: NextRequest) {
     // 1. Resolve the active order
     let order: (Order & { products: Product | null }) | null = null;
 
-    const uuidRegex = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
+    const uuidRegex =
+      /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
     const match = messageBody.match(uuidRegex);
     const orderIdInMessage = match ? match[0] : null;
 
@@ -41,10 +42,35 @@ export async function POST(req: NextRequest) {
       if (orderById) {
         const o = orderById as any;
         if (!o.buyer_phone) {
-          await db
+          // 🔥 1. CREATE A PLACEHOLDER PROFILE FIRST TO SATISFY THE FOREIGN KEY RULE
+          const { error: profileError } = await db
+            .from("profiles")
+            .upsert(
+              { 
+                phone_number: buyerPhone,
+                address_line_1: "",
+                state: "",
+                lga: ""
+              }, 
+              { onConflict: "phone_number" } // If they already exist somehow, just do nothing
+            );
+
+          if (profileError) {
+            console.error("FAILED TO CREATE PROFILE:", profileError);
+          }
+
+          // 2. NOW LINK THE PHONE NUMBER TO THE ORDER
+          const { error: updateError } = await db
             .from("orders")
             .update({ buyer_phone: buyerPhone })
             .eq("id", o.id);
+
+          if (updateError) {
+            console.error("SUPABASE UPDATE FAILED:", updateError);
+          } else {
+            console.log("SUCCESSFULLY LINKED PHONE NUMBER:", buyerPhone);
+          }
+
           o.buyer_phone = buyerPhone;
         }
         order = o;
@@ -105,7 +131,11 @@ export async function POST(req: NextRequest) {
       profile?.state &&
       profile?.lga
     ) {
-      if (/^(yes|use old|use saved|correct|same|forward|confirm|use saved address)$/i.test(messageBody.trim())) {
+      if (
+        /^(yes|use old|use saved|correct|same|forward|confirm|use saved address)$/i.test(
+          messageBody.trim(),
+        )
+      ) {
         const deliveryState = profile.state.toLowerCase().trim();
         const shippingFee = deliveryState.includes("lagos") ? 1500 : 3500;
         const subtotal = order.quantity * product.price;
@@ -126,7 +156,9 @@ export async function POST(req: NextRequest) {
             status: "AWAITING_PAYMENT",
             total_amount: finalTotal,
             payment_ref: `mock_ref_${Math.random().toString(36).substring(2, 11).toUpperCase()}`,
-            auto_release_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+            auto_release_at: new Date(
+              Date.now() + 24 * 60 * 60 * 1000,
+            ).toISOString(),
             chat_history: finalHistory,
           })
           .eq("id", order.id);
@@ -188,11 +220,13 @@ export async function POST(req: NextRequest) {
           const deliveryState = addr.state.toLowerCase().trim();
           const shippingFee = deliveryState.includes("lagos") ? 1500 : 3500;
           const subtotal = nextQuantity * product.price;
-          
+
           nextTotalAmount = subtotal + shippingFee;
           nextPaymentRef = `mock_ref_${Math.random().toString(36).substring(2, 11).toUpperCase()}`;
           nextStatus = "AWAITING_PAYMENT";
-          nextAutoReleaseAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+          nextAutoReleaseAt = new Date(
+            Date.now() + 24 * 60 * 60 * 1000,
+          ).toISOString();
 
           // Programmatically override AI text response to insert clean system invoice layout
           intent.whatsapp_reply = `Got it! Delivery address confirmed.\n\n*Order Summary:*\n* ${nextQuantity} × ${product.name}: ₦${subtotal.toLocaleString()}\n* Shipping (${deliveryState.includes("lagos") ? "Lagos" : "Nationwide"}): ₦${shippingFee.toLocaleString()}\n* *Total: ₦${nextTotalAmount.toLocaleString()}*\n\n🏦 *Escrow Payment Account:*\n* Bank: Holdway Sandbox Bank\n* Account Number: 9920183741\n* Account Name: Holdway Escrow / Merchant\n\nPlease complete the transfer within 24 hours to secure your order.`;
@@ -231,7 +265,8 @@ export async function POST(req: NextRequest) {
     );
   } catch (error) {
     console.error("Error handling Twilio webhook:", error);
-    const errorReply = "We encountered a temporary system issue. Please send your message again in a moment.";
+    const errorReply =
+      "We encountered a temporary system issue. Please send your message again in a moment.";
     return new Response(
       `<?xml version="1.0" encoding="UTF-8"?><Response><Message>${errorReply}</Message></Response>`,
       { headers: { "Content-Type": "application/xml" } },
