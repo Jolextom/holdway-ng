@@ -3,11 +3,40 @@ import { supabaseAdmin } from "@/lib/supabase";
 import { parseIntent } from "@/lib/groq";
 import { ChatMessage, Order, Product } from "@/types/database";
 
+function sendTypingIndicator(messageSid: string) {
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
+  
+  if (!accountSid || !authToken) {
+    console.warn("Missing Twilio credentials for typing indicator");
+    return;
+  }
+
+  const authHeader = 'Basic ' + Buffer.from(`${accountSid}:${authToken}`).toString('base64');
+
+  fetch('https://messaging.twilio.com/v2/Indicators/Typing.json', {
+    method: 'POST',
+    headers: {
+      'Authorization': authHeader,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: new URLSearchParams({
+      messageId: messageSid,
+      channel: 'whatsapp'
+    })
+  }).catch(err => console.error('Failed to trigger typing indicator:', err));
+}
+
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const rawFrom = (formData.get("From") as string) || "";
     const messageBody = (formData.get("Body") as string) || "";
+    const messageSid = (formData.get("MessageSid") as string) || "";
+
+    if (messageSid) {
+      sendTypingIndicator(messageSid);
+    }
 
     // Strip the "whatsapp:" prefix if present
     const buyerPhone = rawFrom.replace(/^whatsapp:/, "");
