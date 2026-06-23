@@ -332,7 +332,7 @@ export async function POST(req: NextRequest) {
       .eq("id", order.id);
 
     // 6. Return TwiML XML
-    if (intent.db_action === "UPDATE_QUANTITY") {
+    if (intent.db_action === "UPDATE_QUANTITY" && savedAddressStr) {
       await sendTwilioTemplateMessage(
         rawFrom,
         rawTo,
