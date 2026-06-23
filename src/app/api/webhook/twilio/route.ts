@@ -256,6 +256,13 @@ export async function POST(req: NextRequest) {
       savedAddressStr,
     );
 
+    // Production Guardrail: Ensure copy perfectly aligns with the interactive buttons
+    if (intent.db_action === 'UPDATE_QUANTITY' && savedAddressStr) {
+      const calculatedSubtotal = (intent.extracted_data as number) * product.price;
+      
+      intent.whatsapp_reply = `Perfect, that's ${intent.extracted_data} units of ${product.name}. Your subtotal comes to NGN ${calculatedSubtotal}. Could you please confirm your delivery details?`;
+    }
+
     let nextStatus = order.status;
     let nextQuantity = order.quantity;
     let nextTotalAmount = order.total_amount;

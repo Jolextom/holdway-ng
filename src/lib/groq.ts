@@ -29,9 +29,8 @@ export async function parseIntent(
   }
 
   const savedAddressContext = savedAddress
-    ? `The buyer has a saved address on file: "${savedAddress}".
-       If the conversation is in the "AWAITING_ADDRESS" state, and they have not confirmed their address yet, your whatsapp_reply should explicitly offer this option: "Would you like us to deliver to your saved address: ${savedAddress}? Reply YES to confirm, or type a new delivery address."`
-    : `The buyer has no saved address. Ask them to provide their delivery address formatted as: Street Address, LGA, State.`;
+    ? `The buyer has a saved address on file: "${savedAddress}".`
+    : `The buyer has no saved address.`;
 
   const systemPrompt = `You are the core routing engine for Holdway NG, an automated WhatsApp conversational commerce platform.
 Your objective is to progress the checkout flow for the product: "${productName}" priced at NGN ${productPrice}.
@@ -50,7 +49,7 @@ STRICT EVALUATION PROTOCOL:
 6. COMPLETE ADDRESS REQUIREMENT: To trigger "UPDATE_ADDRESS", the user's message MUST contain a complete address with a recognizable street/location (address_line_1), Local Government Area (lga), and State (state). If any of these three components are missing or ambiguous (e.g., providing only a street/zone name without a state, or only a state/city without a street address), you MUST set db_action to "NONE" and ask them to provide the missing components.
 
 ACTION GUIDELINES:
-- "UPDATE_QUANTITY": User specifies a quantity (e.g., "send 2", "I need 5 pieces"). Return integer. Acknowledge the subtotal cost (Quantity * ${productPrice}) in the reply, then ask for their delivery address.
+- "UPDATE_QUANTITY": User specifies a quantity (e.g., "send 2", "I need 5 pieces"). Return integer. Acknowledge the subtotal cost (Quantity * ${productPrice}) in the reply.
 - "UPDATE_ADDRESS": User provides shipping info. Extract address_line_1, lga, and state. In the reply, simply state you are confirming the location and compiling their order manifest.
 - "NONE": General greetings, clarifying questions, haggling, or ambiguous statements. Guide them back to fulfilling the current missing state requirement.
 
