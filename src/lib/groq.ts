@@ -119,7 +119,7 @@ Respond ONLY with a valid JSON object matching this schema structure:
   try {
     const formattedMessages = [
       { role: 'system', content: systemPrompt },
-      ...chatHistory.slice(-4).map((msg) => ({
+      ...chatHistory.slice(-8).map((msg) => ({
         role: msg.role === 'assistant' ? ('assistant' as const) : ('user' as const),
         content: msg.content,
       })),

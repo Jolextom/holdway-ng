@@ -16,7 +16,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
 
 // Admin client for server-side/webhooks (bypasses RLS policies)
-export const supabaseAdmin: SupabaseClient<Database> =
+export const supabaseAdmin: SupabaseClient<any> =
   typeof window === 'undefined' && supabaseServiceKey
     ? createClient<Database>(supabaseUrl, supabaseServiceKey, {
         auth: {

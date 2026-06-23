@@ -7,8 +7,7 @@ export async function createPendingOrder(
   merchantId: string,
   price: number
 ): Promise<string> {
-  const db = supabaseAdmin as any;
-  const { data, error } = await db
+  const { data, error } = await supabaseAdmin
     .from("orders")
     .insert({
       product_id: productId,

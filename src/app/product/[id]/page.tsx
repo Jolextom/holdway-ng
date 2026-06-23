@@ -28,8 +28,7 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const { id } = await params;
   try {
-    const db = supabaseAdmin as any;
-    const { data: product } = await db
+    const { data: product } = await supabaseAdmin
       .from("products")
       .select("name")
       .eq("id", id)
@@ -57,8 +56,7 @@ export default async function ProductPage({ params }: PageProps) {
   const { id } = await params;
 
   // Fetch product and nested merchant relation
-  const db = supabaseAdmin as any;
-  const { data: rawProduct } = await db
+  const { data: rawProduct } = await supabaseAdmin
     .from("products")
     .select("*, merchants(*)")
     .eq("id", id)

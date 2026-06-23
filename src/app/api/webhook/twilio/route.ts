@@ -95,7 +95,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const db = supabaseAdmin as any;
+    const db = supabaseAdmin;
 
     // 1. Resolve the active order
     let order: (Order & { products: Product | null }) | null = null;
@@ -170,10 +170,9 @@ export async function POST(req: NextRequest) {
         order = activeOrder as any;
       }
     }
-
     if (!order || !order.products) {
       const fallbackReply =
-        "Welcome to Holdway! It looks like you don't have an active order right now. Please visit one of our storefront single links to choose a product and start checkout.";
+        "Welcome to our checkout assistant! It looks like you don't have an active order right now. Please visit one of our storefront single links to choose a product and start checkout.";
       return new Response(
         `<?xml version="1.0" encoding="UTF-8"?><Response><Message>${fallbackReply}</Message></Response>`,
         { headers: { "Content-Type": "application/xml" } },
