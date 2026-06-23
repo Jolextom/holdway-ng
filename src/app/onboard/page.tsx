@@ -190,7 +190,7 @@ export default function OnboardPage() {
 
     useEffect(() => {
         if (step === 'otp' && otp.length === 6 && !otpError) {
-            handleVerifyOtp(new Event('submit') as any);
+            handleVerifyOtp();
         }
     }, [otp, step]);
 
@@ -245,8 +245,8 @@ export default function OnboardPage() {
         }, 1000);
     }
 
-    function handleVerifyOtp(e: React.FormEvent) {
-        e.preventDefault();
+    function handleVerifyOtp(e?: React.FormEvent) {
+        if (e) e.preventDefault();
         if (otp.length !== 6) {
             setOtpError(copy.onboarding.form.otp.errorLength);
             return;

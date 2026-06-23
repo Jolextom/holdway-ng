@@ -117,17 +117,22 @@ Respond ONLY with a valid JSON object matching this schema structure:
 }`;
 
   try {
-    const formattedMessages = [
+    const formattedMessages: Groq.Chat.Completions.ChatCompletionMessageParam[] = [
       { role: 'system', content: systemPrompt },
-      ...chatHistory.slice(-8).map((msg) => ({
-        role: msg.role === 'assistant' ? ('assistant' as const) : ('user' as const),
-        content: msg.content,
-      })),
+      ...chatHistory.slice(-8).map((msg): Groq.Chat.Completions.ChatCompletionMessageParam => {
+        if (msg.role === 'assistant') {
+          return { role: 'assistant', content: msg.content };
+        }
+        if (msg.role === 'system') {
+          return { role: 'system', content: msg.content };
+        }
+        return { role: 'user', content: msg.content };
+      }),
     ];
 
     const response = await groq.chat.completions.create({
       model: 'llama-3.3-70b-versatile',
-      messages: formattedMessages as any,
+      messages: formattedMessages,
       response_format: { type: 'json_object' },
       temperature: 0.1,
     });

@@ -113,7 +113,7 @@ export async function POST(req: NextRequest) {
         .single();
 
       if (orderById) {
-        const o = orderById as any;
+        const o = orderById as Order & { products: Product | null };
         if (!o.buyer_phone) {
           // 🔥 1. CREATE A PLACEHOLDER PROFILE FIRST TO SATISFY THE FOREIGN KEY RULE
           const { error: profileError } = await db
@@ -167,7 +167,7 @@ export async function POST(req: NextRequest) {
         .maybeSingle();
 
       if (activeOrder) {
-        order = activeOrder as any;
+        order = activeOrder as Order & { products: Product | null };
       }
     }
     if (!order || !order.products) {

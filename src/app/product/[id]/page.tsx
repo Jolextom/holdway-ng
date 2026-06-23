@@ -63,7 +63,7 @@ export default async function ProductPage({ params }: PageProps) {
     .eq("is_active", true)
     .maybeSingle();
 
-  const product = rawProduct as any;
+  const product = rawProduct as (Product & { merchants: Merchant | null }) | null;
 
   if (!product) {
     return (
