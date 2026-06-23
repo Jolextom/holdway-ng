@@ -125,7 +125,7 @@ export async function POST(req: NextRequest) {
                 state: "",
                 lga: ""
               }, 
-              { onConflict: "phone_number" } // If they already exist somehow, just do nothing
+              { onConflict: "phone_number", ignoreDuplicates: true } // If they already exist somehow, just do nothing
             );
 
           if (profileError) {
@@ -336,8 +336,8 @@ export async function POST(req: NextRequest) {
       await sendTwilioTemplateMessage(
         rawFrom,
         rawTo,
-        "HXdc82566c5c5a904a832d26029f0b2aa1",
-        { "1": intent.whatsapp_reply }
+        "HX1ecb5426583a507c78b7435c38ebb83d",
+        { "1": intent.whatsapp_reply },
       );
       return new Response(
         `<?xml version="1.0" encoding="UTF-8"?><Response></Response>`,
