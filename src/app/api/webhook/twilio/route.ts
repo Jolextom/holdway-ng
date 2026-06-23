@@ -27,10 +27,54 @@ function sendTypingIndicator(messageSid: string) {
   }).catch(err => console.error('Failed to trigger typing indicator:', err));
 }
 
+async function sendTwilioTemplateMessage(
+  to: string,
+  from: string,
+  contentSid: string,
+  contentVariables: Record<string, string>
+): Promise<void> {
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
+
+  if (!accountSid || !authToken) {
+    console.warn("Missing Twilio credentials for sending template message");
+    return;
+  }
+
+  const authHeader = 'Basic ' + Buffer.from(`${accountSid}:${authToken}`).toString('base64');
+  const endpoint = `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`;
+
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Authorization': authHeader,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+        From: from,
+        To: to,
+        ContentSid: contentSid,
+        ContentVariables: JSON.stringify(contentVariables)
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`Twilio Template Send HTTP error! status: ${response.status}, details: ${errorText}`);
+    } else {
+      console.log(`Twilio Template message sent successfully to ${to}`);
+    }
+  } catch (err) {
+    console.error('Failed to send Twilio template message:', err);
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const rawFrom = (formData.get("From") as string) || "";
+    const rawTo = (formData.get("To") as string) || "";
     const messageBody = (formData.get("Body") as string) || "";
     const messageSid = (formData.get("MessageSid") as string) || "";
 
@@ -288,6 +332,19 @@ export async function POST(req: NextRequest) {
       .eq("id", order.id);
 
     // 6. Return TwiML XML
+    if (intent.db_action === "UPDATE_QUANTITY") {
+      await sendTwilioTemplateMessage(
+        rawFrom,
+        rawTo,
+        "HXdc82566c5c5a904a832d26029f0b2aa1",
+        { "1": intent.whatsapp_reply }
+      );
+      return new Response(
+        `<?xml version="1.0" encoding="UTF-8"?><Response></Response>`,
+        { headers: { "Content-Type": "application/xml" } },
+      );
+    }
+
     return new Response(
       `<?xml version="1.0" encoding="UTF-8"?><Response><Message>${intent.whatsapp_reply}</Message></Response>`,
       { headers: { "Content-Type": "application/xml" } },
