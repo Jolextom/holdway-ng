@@ -1,7 +1,6 @@
 import { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
-import { Package, ShieldAlert } from "lucide-react";
+import { ShieldAlert } from "lucide-react";
 import { supabaseAdmin } from "@/lib/supabase";
 import { Product, Merchant } from "@/types/database";
 import copy from "@/lib/content/copy.json";
@@ -94,62 +93,73 @@ export default async function ProductPage({ params }: PageProps) {
   const merchantName = product.merchants?.business_name || copy.brand.name;
 
   return (
-    <div className="flex-1 flex flex-col justify-center bg-canvas text-ink font-sans">
-      <main className="max-w-md mx-auto w-full px-4 py-8 flex flex-col gap-6">
-        <div className="bg-surface border border-border rounded-2xl shadow-card overflow-hidden p-5 flex flex-col gap-5">
-          {/* Product Image section with low-data optimization */}
-          <div className="w-full aspect-square relative rounded-xl overflow-hidden bg-surface-raised border border-border flex items-center justify-center">
-            {imageUrl ? (
-              <Image
-                src={imageUrl}
-                alt={product.name}
-                width={480}
-                height={480}
-                quality={75}
-                priority
-                className="w-full h-full object-cover"
+    <div className="min-h-screen bg-canvas py-8 px-4 flex items-center justify-center font-sans text-ink">
+      <div className="max-w-md w-full bg-surface border border-border rounded-2xl shadow-card overflow-hidden">
+        {/* Product Image */}
+        <div className="relative w-full aspect-square bg-surface-raised border-b border-border flex items-center justify-center text-ink-faint">
+          {imageUrl ? (
+            <img
+              src={imageUrl}
+              alt={product.name}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <svg
+              className="h-16 w-16 stroke-[1.5]"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
               />
-            ) : (
-              <div className="flex flex-col items-center gap-2 text-ink-faint">
-                <Package className="h-12 w-12 stroke-[1.5]" />
-              </div>
-            )}
+            </svg>
+          )}
+        </div>
+
+        {/* Content */}
+        <div className="p-6 space-y-5">
+          {/* Merchant name */}
+          <div className="text-xs font-mono uppercase tracking-wider text-ink-muted">
+            {merchantName}
           </div>
 
-          {/* Details Section */}
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-between text-xs text-ink-muted font-mono uppercase tracking-wider">
-              <span>{merchantName}</span>
-            </div>
+          {/* Product name & description */}
+          <div className="space-y-2">
             <h1 className="text-2xl font-bold tracking-tight text-ink">
               {product.name}
             </h1>
             {product.description && (
-              <p className="text-sm text-ink-muted leading-relaxed mt-0.5 animate-fadeIn">
+              <p className="text-sm text-ink-muted leading-relaxed">
                 {product.description}
               </p>
             )}
-            <div className="text-3xl font-extrabold text-trust mt-1">
-              {formattedPrice}
-            </div>
+          </div>
+
+          {/* Price */}
+          <div className="text-3xl font-extrabold text-trust">
+            {formattedPrice}
           </div>
 
           <hr className="border-border" />
 
-          {/* Flat-rate Shipping disclaimer */}
-          <div className="p-3.5 rounded-xl bg-surface-raised border border-border text-sm text-ink-muted flex items-center gap-3">
+          {/* Shipping info */}
+          <div className="flex items-start gap-3 text-sm text-ink-muted p-3 rounded-xl bg-surface-raised border border-border">
             <span className="text-base select-none">🚚</span>
-            <span className="leading-snug">{copy.storefront.shippingInfo}</span>
+            <span>{copy.storefront.shippingDetailInfo}</span>
           </div>
 
-          {/* Escrow Shield Info */}
+          {/* Escrow shield */}
           <div className="p-4 rounded-xl bg-trust-light border border-trust-mid/10 flex flex-col gap-1.5">
             <div className="font-semibold text-trust-mid text-sm flex items-center gap-2">
               <span className="text-base select-none">🔒</span>
-              {copy.storefront.escrowBadge}
+              {copy.storefront.escrowBadgeProtected}
             </div>
             <p className="text-xs text-ink-muted/95 leading-relaxed">
-              {copy.storefront.escrowBody}
+              {copy.storefront.escrowBodyNoRisk}
             </p>
           </div>
 
@@ -162,7 +172,7 @@ export default async function ProductPage({ params }: PageProps) {
             />
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

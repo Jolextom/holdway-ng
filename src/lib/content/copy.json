@@ -79,6 +79,12 @@
     "escrowBadge": "🔒 Escrow Secured",
     "escrowBody": "Your payment is held safely in escrow and only released to the merchant after you confirm delivery.",
     "errorProductNotFound": "Product not found",
-    "errorGeneric": "Something went wrong. Please try again."
+    "errorGeneric": "Something went wrong. Please try again.",
+    "subtitle": "Secure checkout via WhatsApp",
+    "escrowProtectedHeader": "Escrow-protected – your money is held safely until delivery",
+    "noProducts": "No products listed yet.",
+    "shippingDetailInfo": "Flat-rate delivery — we'll confirm the cost on WhatsApp.",
+    "escrowBadgeProtected": "Escrow-protected",
+    "escrowBodyNoRisk": "Your payment is held safely until you confirm delivery. No risk."
   }
 }
