@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { theme } from "@/lib/theme";
 import copy from "@/lib/content/copy.json";
+import { createPendingOrder } from "./actions";
 
 interface CheckoutButtonProps {
   productId: string;
@@ -23,21 +24,8 @@ export default function CheckoutButton({
     setIsLoading(true);
     setError(null);
     try {
-      // 1. Initialize order in the database via API route
-      const response = await fetch("/api/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ productId, merchantId, price }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || "Failed to initialize order");
-      }
-
-      const { orderId } = await response.json();
+      // 1. Initialize order in the database
+      const orderId = await createPendingOrder(productId, merchantId, price);
 
       // 2. Fetch bot number & manifest text from copy configuration
       const botNumber =
