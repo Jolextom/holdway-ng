@@ -1,10 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: [
-    "ac60-154-113-158-228.ngrok-free.app",
-    "6aae-154-113-158-228.ngrok-free.app"
-  ],
   images: {
     remotePatterns: [
       {
@@ -24,12 +20,9 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     serverActions: {
-      allowedOrigins: [
-        "ac60-154-113-158-228.ngrok-free.app",
-        "6aae-154-113-158-228.ngrok-free.app",
-        "*.ngrok-free.app",
-        "localhost:3000"
-      ]
+      allowedOrigins: process.env.ALLOWED_ORIGINS
+        ? process.env.ALLOWED_ORIGINS.split(",").map(o => o.trim())
+        : ["localhost:3000", "*.ngrok-free.app"]
     }
   }
 };
