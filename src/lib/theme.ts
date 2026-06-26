@@ -15,6 +15,7 @@ export const theme = {
             REQUIRES_ATTENTION: 'bg-error-light text-error-mid border-error/20',
             AWAITING_PAYMENT: 'bg-warning-light text-warning-mid border-warning/20',
             DELIVERED: 'bg-info-light text-info border-info/20',
+            CANCELLED: 'bg-surface-raised text-ink-faint border-border',
         },
         sidebar: {
             active: 'bg-trust-light text-trust',

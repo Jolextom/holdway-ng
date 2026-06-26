@@ -156,5 +156,34 @@
       "cancel": "Cancel"
     },
     "confirmDelete": "Delete this item?"
+  },
+  "orders": {
+    "title": "Orders",
+    "emptyTitle": "No orders here",
+    "emptyBody": "Orders matching this filter will appear here.",
+    "tabs": {
+      "all": "All",
+      "AWAITING_PAYMENT": "Awaiting Payment",
+      "PAID": "In Escrow",
+      "DISPATCHED": "Dispatched",
+      "REQUIRES_ATTENTION": "Needs Attention",
+      "DELIVERED": "Delivered"
+    },
+    "table": {
+      "orderId": "Order ID",
+      "date": "Date",
+      "buyerPhone": "Buyer Phone",
+      "items": "Items",
+      "amount": "Amount",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "actions": {
+      "markDispatched": "Mark Dispatched",
+      "confirmDelivery": "Confirm Delivery",
+      "view": "View",
+      "itemSingular": "item",
+      "itemPlural": "items"
+    }
   }
 }
