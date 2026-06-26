@@ -22,6 +22,16 @@
   --error-mid: #b91c1c;
   --error-light: #fef2f2;
 
+  /* Warning/Alert Colors */
+  --warning: #d97706;
+  --warning-mid: #b45309;
+  --warning-light: #fef3c7;
+
+  /* Info/Delivered Colors */
+  --info: #2563eb;
+  --info-mid: #1d4ed8;
+  --info-light: #eff6ff;
+
   --shadow-card-val: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03), 0 0 0 1px rgba(0, 0, 0, 0.05);
 }
 
@@ -45,6 +55,14 @@
     --error: #f87171;
     --error-mid: #fca5a5;
     --error-light: #7f1d1d;
+
+    --warning: #fbbf24;
+    --warning-mid: #f59e0b;
+    --warning-light: #78350f;
+
+    --info: #60a5fa;
+    --info-mid: #3b82f6;
+    --info-light: #1e3a8a;
 
     --shadow-card-val: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.05);
   }
@@ -72,6 +90,14 @@
   --color-error: var(--error);
   --color-error-mid: var(--error-mid);
   --color-error-light: var(--error-light);
+
+  --color-warning: var(--warning);
+  --color-warning-mid: var(--warning-mid);
+  --color-warning-light: var(--warning-light);
+
+  --color-info: var(--info);
+  --color-info-mid: var(--info-mid);
+  --color-info-light: var(--info-light);
 
   --shadow-card: var(--shadow-card-val);
 }

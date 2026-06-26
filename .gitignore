@@ -42,3 +42,8 @@ next-env.d.ts
 
 # Antigravity / AI Agent Local Governance
 AGENTS.md
+
+# Local Sandbox Playground (DO NOT REMOVE)
+scratchpad.ts
+HOLDWAY_BLUEPRINT.md
+.env.local

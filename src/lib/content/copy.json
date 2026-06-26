@@ -86,5 +86,44 @@
     "shippingDetailInfo": "Flat-rate delivery — we'll confirm the cost on WhatsApp.",
     "escrowBadgeProtected": "Escrow-protected",
     "escrowBodyNoRisk": "Your payment is held safely until you confirm delivery. No risk."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "inventory": "Inventory",
+      "orders": "Orders",
+      "settings": "Settings"
+    },
+    "payoutBanner": {
+      "message": "Payouts are paused — add your bank details to receive money.",
+      "action": "Set up now →"
+    },
+    "attentionBanner": {
+      "messageSingle": "order needs your attention",
+      "messagePlural": "orders need your attention",
+      "action": "View orders →"
+    },
+    "stats": {
+      "escrowBalance": "Escrow Balance",
+      "pendingOrders": "Pending Orders",
+      "totalPaidOut": "Total Paid Out"
+    },
+    "recentOrders": {
+      "title": "Recent orders",
+      "actionViewAll": "View all orders →",
+      "table": {
+        "orderId": "Order ID",
+        "buyer": "Buyer",
+        "items": "Items",
+        "amount": "Amount",
+        "status": "Status",
+        "action": "Action"
+      },
+      "actions": {
+        "markDispatched": "Mark Dispatched",
+        "confirmDelivery": "Confirm Delivery"
+      }
+    }
   }
 }
