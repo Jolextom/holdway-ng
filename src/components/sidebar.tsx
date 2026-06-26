@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { LayoutDashboard, Package, ClipboardList, Settings } from 'lucide-react';
 import { theme } from '@/lib/theme';
 import copy from '@/lib/content/copy.json';
+import ThemeToggle from '@/components/theme-toggle';
 
 interface SidebarProps {
   merchantName?: string;
@@ -58,7 +59,7 @@ export default function Sidebar({
         })}
       </nav>
 
-      {/* Footer Profile */}
+      {/* Footer Profile + Theme Toggle */}
       <div className="p-6 border-t border-border">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-trust-light flex items-center justify-center text-trust font-bold text-sm">
@@ -68,6 +69,7 @@ export default function Sidebar({
             <p className="text-sm font-medium text-ink truncate">{merchantName}</p>
             <p className="text-xs text-ink-muted truncate">{merchantEmail}</p>
           </div>
+          <ThemeToggle />
         </div>
       </div>
     </aside>

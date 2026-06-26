@@ -125,5 +125,36 @@
         "confirmDelivery": "Confirm Delivery"
       }
     }
+  },
+  "inventory": {
+    "title": "Inventory",
+    "storeLinkLabel": "Your Store Link",
+    "addItemOpen": "Add item",
+    "addItemClose": "Close form",
+    "emptyTitle": "No items yet",
+    "emptyBody": "Add your first product above to start selling.",
+    "table": {
+      "image": "Image",
+      "name": "Item Name",
+      "description": "Description",
+      "price": "Price",
+      "actions": "Actions"
+    },
+    "form": {
+      "title": "Add a new item",
+      "editTitle": "Edit item",
+      "nameLbl": "Item name",
+      "namePlaceholder": "e.g. Ankara fabric (per yard)",
+      "descriptionLbl": "Description",
+      "descriptionOptional": "(optional)",
+      "descriptionPlaceholder": "Brief description of the item",
+      "priceLbl": "Price (₦)",
+      "imageLbl": "Product image",
+      "imageHint": "Adding images makes your products easier to find and more likely to sell. Buyers trust what they see.",
+      "submitAdd": "Add item",
+      "submitUpdate": "Update item",
+      "cancel": "Cancel"
+    },
+    "confirmDelete": "Delete this item?"
   }
 }

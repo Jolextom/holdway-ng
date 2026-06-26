@@ -35,38 +35,38 @@
   --shadow-card-val: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03), 0 0 0 1px rgba(0, 0, 0, 0.05);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #09090b;
-    --foreground: #fafafa;
+/* Dark mode — toggled via html.dark class (set by theme-toggle.tsx & layout inline script) */
+html.dark {
+  --background: #09090b;
+  --foreground: #fafafa;
 
-    --canvas: #09090b;
-    --surface: #121214;
-    --surface-raised: #1e1e21;
-    --border: #27272a;
-    --ink: #fafafa;
-    --ink-muted: #a1a1aa;
-    --ink-faint: #52525b;
+  --canvas: #09090b;
+  --surface: #121214;
+  --surface-raised: #1e1e21;
+  --border: #27272a;
+  --ink: #fafafa;
+  --ink-muted: #a1a1aa;
+  --ink-faint: #52525b;
 
-    --trust: #10b981;
-    --trust-mid: #34d399;
-    --trust-light: #064e3b;
+  --trust: #10b981;
+  --trust-mid: #34d399;
+  --trust-light: #064e3b;
 
-    --error: #f87171;
-    --error-mid: #fca5a5;
-    --error-light: #7f1d1d;
+  --error: #f87171;
+  --error-mid: #fca5a5;
+  --error-light: #7f1d1d;
 
-    --warning: #fbbf24;
-    --warning-mid: #f59e0b;
-    --warning-light: #78350f;
+  --warning: #fbbf24;
+  --warning-mid: #f59e0b;
+  --warning-light: #78350f;
 
-    --info: #60a5fa;
-    --info-mid: #3b82f6;
-    --info-light: #1e3a8a;
+  --info: #60a5fa;
+  --info-mid: #3b82f6;
+  --info-light: #1e3a8a;
 
-    --shadow-card-val: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.05);
-  }
+  --shadow-card-val: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
+
 
 @theme inline {
   --color-background: var(--background);
