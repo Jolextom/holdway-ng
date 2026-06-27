@@ -209,5 +209,41 @@
       "confirmDelivery": "Confirm Delivery",
       "autoConfirmNote": "Or wait — delivery is confirmed automatically when the buyer texts RECEIVED on WhatsApp."
     }
+  },
+  "settings": {
+    "title": "Settings",
+    "sections": {
+      "businessInfo": "Business Info",
+      "payoutDetails": "Payout Details",
+      "automatedReplies": "Automated Replies"
+    },
+    "business": {
+      "nameLabel": "Business name",
+      "whatsappLabel": "WhatsApp number",
+      "whatsappReadOnlyNote": "To change your WhatsApp number, contact support."
+    },
+    "payout": {
+      "bankLabel": "Bank name",
+      "accountNumberLabel": "Account number",
+      "accountNameLabel": "Account name",
+      "verifiedBadge": "VERIFIED"
+    },
+    "faq": {
+      "description": "Keywords are matched against buyer messages on WhatsApp. Keep them short.",
+      "keywordCol": "Keyword",
+      "responseCol": "Response",
+      "deleteCol": "Delete",
+      "addOpen": "+ Add FAQ",
+      "addClose": "Close form",
+      "keywordLabel": "Keyword",
+      "keywordPlaceholder": "e.g. delivery time",
+      "responseLabel": "Response",
+      "responsePlaceholder": "e.g. We deliver in 2–3 days",
+      "submitAdd": "Save FAQ",
+      "submitUpdate": "Update FAQ",
+      "cancel": "Cancel",
+      "confirmDelete": "Delete this FAQ?"
+    },
+    "saveChanges": "Save changes"
   }
 }
